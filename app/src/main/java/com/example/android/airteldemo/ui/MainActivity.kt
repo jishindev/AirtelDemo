@@ -19,7 +19,7 @@ import org.jetbrains.anko.toast
 
 class MainActivity : AppCompatActivity() {
 
-    // viewModel that contains the buisness logic and states for this activity
+    // viewModel that contains the business logic and states for this activity
     private val mainVM by lazy { ViewModelProviders.of(this).get(MainVM::class.java) }
     // Adapter for the KeyActions recyclerView
     private val keyActionsRvAdapter by lazy {
@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity() {
             setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
         }
 
+
         // RecyclerView Initialization
         rvKeyActions.layoutManager = LinearLayoutManager(this)
         // Makes rendering faster if the recyclerView item size is not dynamic
@@ -79,13 +80,23 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        checkConnectionAndLoadData()
+    }
+
+    private fun checkConnectionAndLoadData() {
+
         if (isConnected()) {
             progressBar.visibility = View.VISIBLE
+            rvKeyActions.visibility = View.VISIBLE
+            flNoInternet.visibility = View.GONE
             loadAllCheckpoints()
         } else {
-            toast("No internet")
-            rvKeyActions.visibility = View.VISIBLE
+            //toast("No internet")
+            flNoInternet.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
+            btnRetry.setOnClickListener {
+                checkConnectionAndLoadData()
+            }
         }
     }
 
